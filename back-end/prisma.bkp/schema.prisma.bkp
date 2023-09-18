@@ -8,7 +8,6 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
-  // url = "mongodb+srv://dirceug2jr:Dirceu550@cluster0.wgbceah.mongodb.net/escola"
 }
 
 enum Nivel {

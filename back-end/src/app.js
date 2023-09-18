@@ -17,11 +17,13 @@ app.use("/users", usersRouter);
 
 
 
-//*************************/
+/*********************************************/
 // ROTAS DA APLICAÇÃO BACK-END
 
 import cursoRoute from './routes/curso.js'
-app.use('./curso', cursoRoute)
-//***********************************/
+app.use('/curso', cursoRoute)
+
+import professorRoute from './routes/professor.js'
+app.use('/professor', professorRoute)
 
 export default app;
