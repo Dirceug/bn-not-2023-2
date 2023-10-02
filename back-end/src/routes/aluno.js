@@ -9,4 +9,6 @@ router.get('/:id', controller.retrieveOne)
 router.put('/:id', controller.update)
 router.delete('/:id', controller.delete)
 
+router.put('/:alunoId/turma/:turmaId', controller.addTurma)
+
 export default router
