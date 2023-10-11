@@ -1,0 +1,91 @@
+//Criação da Column Family "users" no keyspace "cassandra"
+
+create table cassandra.users(
+    id int,
+    country text, 
+    first_name text, 
+    last_name text,
+    active boolean,
+    primary key(id)
+);
+
+//Para retornar todos os registros da column Family
+select * from cassandra.users;
+
+//Inserção de registros na column family ('tabela') **4 registros**
+insert into cassandra.users(id, country, first_name, active)
+values(1, 'BR', 'Tonho', true);
+
+insert into cassandra.users(id, country, first_name, active)
+values(2, 'AR', 'Maria', false);
+
+insert into cassandra.users(id, country, first_name)
+values(3, 'BR', 'Joaquin');
+
+insert into cassandra.users(id, country, first_name, active)
+values(4, 'US', 'John', true);
+
+
+
+************************************************************************
+//Corrigindo erro meu, criei a column famoly sem last name:
+insert into cassandra.users(id, country, first_name, activate) values(1, 'BR', 'Tonho', true);
+
+insert into cassandra.users(id, country, first_name, activate)
+values(2, 'AR', 'Maria', false);
+
+insert into cassandra.users(id, country, first_name, activate)
+values(3, 'BR', 'Joaquin' false);
+
+insert into cassandra.users(id, country, first_name)
+values(4, 'US', 'John');
+
+//Cassandra só faz pesquisas por ID
+select * from cassandra.users where id = 2;
+
+select * from cassandra.users where country = 'BR';
+//InvalidRequest: Error from server: code=2200 [Invalid query] message="Cannot execute this query 
+//as it might involve data filtering and thus may have unpredictable performance. 
+//If you want to execute this query despite the performance unpredictability, use ALLOW FILTERING"
+
+select * from cassandra.users where country = 'BR' allow filtering;
+
+//Comando para excluir a column family:
+drop table cassandra.users;
+
+
+//Recriando a column family:
+create table cassandra.users(
+    id int,
+    country text, 
+    first_name text, 
+    last_name text,
+    active boolean,
+    primary key(country, id)
+);
+
+//neste exemplo: country é partition key (define os clusters em que os dados serã salvos)
+                 id é clustering key (define o "ordenamento" dos dados)
+
+//Para retornar todos os registros da column Family
+select * from cassandra.users;
+
+// Na pesquisa é necessário colocar todos os campos o partitionkey no where.
+//Assim não funcionária:
+select * from cassandra.users where id = 2;
+
+//Precisamos fazer assim:
+select * from cassandra.users country = 'AR';
+//Ou assim:
+select * from cassandra.users where id = 2 and country = 'AR';
+select * from cassandra.users where id > 0 and country = 'AR'; //também funciona
+
+
+//Criando um índice secundário em um campo para possibilitar consultas por exemplo:
+create index idx_first_name on cassandra.users(first_name);
+
+//Agora podemos fazer uma busca com base em first_name:
+select * from cassandra.users where country = 'BR' and first_name = 'Tonho'; 
+
+//Agora podemos buscar só com first name também:
+select * from cassandra.users where first_name = 'Tonho'; 
